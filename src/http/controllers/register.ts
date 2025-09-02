@@ -1,0 +1,42 @@
+import type { FastifyReply, FastifyRequest } from "fastify";
+import z from "zod";
+import { registerUseCase } from "../../use-cases/register";
+
+// MVC PrismaClient - Model / View / Controller`
+//
+// Controller {
+// controla a porta de entrada e de saída da aplicação
+// }
+
+interface Error {
+	message: string;
+}
+// Controller pattern
+export async function registerController(
+	request: FastifyRequest,
+	reply: FastifyReply,
+) {
+	// DTO - Data transfer object
+	const registerBodySchema = z.object({
+		email: z.string().email(),
+		name: z.string().min(2).max(100),
+		password: z.string().min(8).max(100),
+	});
+
+	const { email, name, password } = registerBodySchema.parse(request.body);
+
+	try {
+		await registerUseCase({
+			email,
+			name,
+			password,
+		});
+	} catch (error: unknown) {
+		if (error instanceof Error) {
+			console.error(error.message);
+			reply.status(409).send({ error: error.message });
+		}
+	}
+
+	reply.status(201).send({ message: "User created successfully" });
+}
