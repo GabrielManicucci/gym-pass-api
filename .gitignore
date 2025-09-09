@@ -3,3 +3,9 @@ node_modules/
 build/
 
 /generated/prisma
+
+/src/generated/prisma
+
+/src/generated/prisma
+
+/src/generated/prisma

@@ -3,4 +3,4 @@ import { AppRoutes } from "./http/routes";
 
 export const app = fastify();
 
-app.register(AppRoutes)
+app.register(AppRoutes);

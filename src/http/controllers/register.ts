@@ -1,16 +1,13 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 import z from "zod";
-import { registerUseCase } from "../../use-cases/register";
+import { RegisterFactory } from "../../use-cases/register-factory";
 
-// MVC PrismaClient - Model / View / Controller`
+// MVC Pattern - Model / View / Controller`
 //
 // Controller {
 // controla a porta de entrada e de saída da aplicação
 // }
 
-interface Error {
-	message: string;
-}
 // Controller pattern
 export async function registerController(
 	request: FastifyRequest,
@@ -18,7 +15,7 @@ export async function registerController(
 ) {
 	// DTO - Data transfer object
 	const registerBodySchema = z.object({
-		email: z.string().email(),
+		email: z.email(),
 		name: z.string().min(2).max(100),
 		password: z.string().min(8).max(100),
 	});
@@ -26,7 +23,8 @@ export async function registerController(
 	const { email, name, password } = registerBodySchema.parse(request.body);
 
 	try {
-		await registerUseCase({
+		const RegisterUseCase = RegisterFactory();
+		await RegisterUseCase.execute({
 			email,
 			name,
 			password,
