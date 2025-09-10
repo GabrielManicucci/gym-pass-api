@@ -1,5 +1,6 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 import z from "zod";
+import { UserAlreadyExistsError } from "../../use-cases/errors/user-already-exists-error";
 import { RegisterFactory } from "../../use-cases/register-factory";
 
 // MVC Pattern - Model / View / Controller`
@@ -30,10 +31,11 @@ export async function registerController(
 			password,
 		});
 	} catch (error: unknown) {
-		if (error instanceof Error) {
-			console.error(error.message);
+		if (error instanceof UserAlreadyExistsError) {
 			reply.status(409).send({ error: error.message });
 		}
+
+		throw error;
 	}
 
 	reply.status(201).send({ message: "User created successfully" });
