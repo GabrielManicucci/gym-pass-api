@@ -1,15 +1,23 @@
-import { beforeEach, describe, expect, it, test } from "vitest";
-import { UsersRepository } from "../reporitories/users-repository";
+import { beforeEach, describe, expect, test } from "vitest";
+import { InMemoryUsersRepository } from "../reporitories/in-memory-repository";
 import { RegisterUseCase } from "./register";
+
+let registerUsecase: RegisterUseCase;
 
 describe("Register Use case", () => {
 	beforeEach(() => {
-		const userRepository = new UsersRepository();
-		const registerUseCase = new RegisterUseCase(userRepository);
+		const userRepository = new InMemoryUsersRepository();
+		registerUsecase = new RegisterUseCase(userRepository);
 	});
 
-	test("initial test", async () => {
+	test("Create a new user", async () => {
 		// Test code here
-		expect(2 + 2).toBe(4);
+		const user = await registerUsecase.execute({
+			name: "John Doe",
+			email: "john.doe@example.com",
+			password: "password",
+		});
+
+		expect(user.id).toEqual(expect.any(String));
 	});
 });

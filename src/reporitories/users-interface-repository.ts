@@ -7,4 +7,5 @@ import type { UserDto } from "../types/user";
 export interface IUsersRepository {
 	create(data: UserDto): Promise<User>;
 	findByEmail(email: string): Promise<User | null>;
+	findById(id: string): Promise<User | null>;
 }
